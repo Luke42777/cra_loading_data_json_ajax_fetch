@@ -1,38 +1,35 @@
-
+import Word from './Word.js'
 import './App.css';
-import React,{Component} from 'react'
+import React, { Component } from 'react'
 
 class App extends Component {
-  state = { 
-    words:  [
-      {
-        "id": 1,
-        "en": "dog",
-        "fr": "chien"
-      },
-      {
-        "id": 2,
-        "en": "cat",
-        "fr": "chat"
-      },
-      {
-        "id": 3,
-        "en": "boar",
-        "fr": "sanglier"
-      }
-    ]
-   } 
-  render() { 
-    const words = this.state.words.map(word => (
-      <div key={word.id}>
-        <h2>{word.en}</h2>
-        <h1>{word.fr}</h1>
-      </div>
+  state = {
+    words: [],
+    isLoaded: false,
+  }
+  componentDidMount() {
+    setTimeout(this.fetchData.bind(this), 3000)
+  }
+  fetchData() {
+    fetch('data/words.json')
+      .then(response => response.json())
+      .then(data => {
+        this.setState(
+          {
+            words: data.words,
+            isLoaded: true,
+          }
+        )
+      })
+  }
+  render() {
+    const words = this.state.words.map((word) => (
+      <Word key={word.id} eng={word.en} fre={word.fr} />
     ));
     return (
-      <div>{words}</div>
+      <ul>{this.state.isLoaded ? words : "Loading data..."}</ul>
     );
   }
 }
- 
+
 export default App;
